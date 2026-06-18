@@ -1,0 +1,1 @@
+import{i as e,o as t,r as n,s as r,t as i}from"./theme-provider-BgbBtky4.js";var a=r(t(),1),o=e(),s=n();function c(){return(0,s.jsx)(`div`,{className:`min-h-svh bg-background`})}(0,o.createRoot)(document.getElementById(`root`)).render((0,s.jsx)(a.StrictMode,{children:(0,s.jsx)(i,{children:(0,s.jsx)(c,{})})}));
