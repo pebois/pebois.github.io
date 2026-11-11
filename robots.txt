@@ -1,0 +1,17 @@
+# L'Étape 6 : textes sous droits réservés. Les robots de collecte pour
+# l'entraînement de modèles d'IA sont priés de ne pas les lire.
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: PerplexityBot
+User-agent: Bytespider
+User-agent: Applebot-Extended
+User-agent: meta-externalagent
+Disallow: /etape-6/
+
+User-agent: *
+Allow: /
+
+Sitemap: https://pebois.github.io/sitemap.xml
