@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>When it’s done</title>
+    <link>https://pebois.github.io/billets/</link>
+    <atom:link href="https://pebois.github.io/billets/flux.xml" rel="self" type="application/rss+xml"/>
+    <description>Des billets d’humeur. Chacun a sa forme, parce que la forme dit aussi quelque chose.</description>
+    <language>fr</language>
+    <copyright>© 2026 Pierre-Emmanuel Bois. Tous droits réservés.</copyright>
+    <item>
+      <title>Je me charge de l’annonce</title>
+      <link>https://pebois.github.io/billets/etape-6/</link>
+      <guid isPermaLink="true">https://pebois.github.io/billets/etape-6/</guid>
+      <pubDate>Tue, 17 Nov 2026 08:00:00 GMT</pubDate>
+      <description>Il a écrit une série de six textes. Il ne sait pas comment vous le dire. Moi, si.</description>
+    </item>
+  </channel>
+</rss>

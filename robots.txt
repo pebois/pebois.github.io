@@ -1,4 +1,4 @@
-# L'Étape 6 : textes sous droits réservés. Les robots de collecte pour
+# L'Étape 6 et les billets : textes sous droits réservés. Les robots de collecte pour
 # l'entraînement de modèles d'IA sont priés de ne pas les lire.
 User-agent: GPTBot
 User-agent: ClaudeBot
@@ -10,6 +10,7 @@ User-agent: Bytespider
 User-agent: Applebot-Extended
 User-agent: meta-externalagent
 Disallow: /etape-6/
+Disallow: /billets/
 
 User-agent: *
 Allow: /
