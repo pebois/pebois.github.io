@@ -1,0 +1,97 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit SHA to publish
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url || steps.retry.outputs.page_url }}
+    steps:
+      - name: Check inputs
+        env:
+          REF: ${{ inputs.ref }}
+        run: |
+          if [ "${RUNNER_DEBUG:-}" = "1" ]; then
+            echo "::error::Debug logging must be off"
+            exit 1
+          fi
+          if ! [[ $REF =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::ref must be a full commit SHA"
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ secrets.SITE_REPOSITORY }}
+          ref: ${{ inputs.ref }}
+          ssh-key: ${{ secrets.SITE_DEPLOY_KEY }}
+          persist-credentials: false
+          fetch-depth: 1
+          show-progress: false
+          path: site
+
+      - name: Archive
+        run: |
+          if [ -n "$(find site -path site/.git -prune -o -type l -print -quit)" ]; then
+            echo "::error::Symbolic links are not allowed"
+            exit 1
+          fi
+          tar \
+            --dereference --hard-dereference \
+            --directory site \
+            -cf "$RUNNER_TEMP/artifact.tar" \
+            --exclude=.git \
+            --exclude=.github \
+            '--exclude=.[^/]*' \
+            .
+
+      - name: Upload
+        id: upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Deploy
+        id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+      - name: Wait before retry
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 20
+
+      - name: Deploy (retry)
+        id: retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+      - name: Delete artifact
+        if: always() && steps.upload.outputs.artifact-id != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+        run: gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID" --silent
